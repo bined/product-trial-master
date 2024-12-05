@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "string"
+    },
+    "@id": {
+      "type": "string"
+    },
+    "@type": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    },
+    "firstname": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "@context",
+    "@id",
+    "@type",
+    "email",
+    "username",
+    "firstname"
+  ]
+}
