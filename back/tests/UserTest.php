@@ -3,27 +3,27 @@
 namespace App\Tests;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\UserFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * User API Test Suite
- * 
- * Tests the user registration and authentication endpoints
  */
 class UserTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
+    private string $schemaDir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->schemaDir = __DIR__ . '/schemas/';
+    }
+
     /**
      * Test user creation and immediate login
-     * 
-     * This test:
-     * 1. Creates a new user via the API
-     * 2. Verifies the response format and content
-     * 3. Attempts to login with the created credentials
-     * 
-     * @return void
      */
     public function testCreateUserSuccess(): void
     {
@@ -45,39 +45,9 @@ class UserTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-
-        $this->assertMatchesJsonSchema('{
-              "$schema": "http://json-schema.org/draft-04/schema#",
-              "type": "object",
-              "properties": {
-                "@context": {
-                  "type": "string"
-                },
-                "@id": {
-                  "type": "string"
-                },
-                "@type": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "username": {
-                  "type": "string"
-                },
-                "firstname": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "@context",
-                "@id",
-                "@type",
-                "email",
-                "username",
-                "firstname"
-              ]
-            }'
+        
+        $this->assertMatchesJsonSchema(
+            json_decode(file_get_contents($this->schemaDir . 'user.json'))
         );
 
         $responseData = json_decode($response->getContent());
@@ -90,14 +60,6 @@ class UserTest extends ApiTestCase
 
     /**
      * Attempts to login with given credentials
-     * 
-     * Verifies:
-     * 1. Successful authentication
-     * 2. JWT token is returned
-     * 3. Response format is correct
-     * 
-     * @param array{email: string, password: string, username: string, firstname: string} $data User credentials
-     * @return void
      */
     private function loginSuccess(array $data): void
     {
@@ -113,18 +75,8 @@ class UserTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
         
-        $this->assertMatchesJsonSchema('{
-              "$schema": "http://json-schema.org/draft-04/schema#",
-              "type": "object",
-              "properties": {
-                "token": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "token"
-              ]
-            }'
+        $this->assertMatchesJsonSchema(
+            json_decode(file_get_contents($this->schemaDir . 'token.json'))
         );
     }
 }

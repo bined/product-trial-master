@@ -39,7 +39,7 @@ class ProductSecuritySubscriber implements EventSubscriberInterface
         $user = $this->security->getUser();
 
         if (!$user || $user->getUserIdentifier() !== self::ADMIN_EMAIL) {
-            throw new AccessDeniedHttpException('Seul admin@admin.com peut modifier les produits.');
+            throw new AccessDeniedHttpException('Seul admin@admin.com peut creer ou modifier, supprimer les produits.');
         }
     }
 }
