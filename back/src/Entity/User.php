@@ -22,8 +22,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ApiResource(operations: [
         new Post(name:'create_user',
             uriTemplate: '/users',
-            normalizationContext: ['groups' => 'create_user'],
-            denormalizationContext: ['groups' => 'create_user']
+            normalizationContext: ['groups' => 'read'],
+            denormalizationContext: ['groups' => 'write']
         )
     ])
 ]
@@ -35,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups('create_user')]
+    #[Groups(['write', 'read'])]
     #[Assert\NotBlank, Assert\Email]
     private ?string $email = null;
 
@@ -49,17 +49,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups('create_user')]
+    #[Groups('write')]
     #[Assert\NotBlank, Assert\NotNull]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups('create_user')]
+    #[ORM\Column(length: 180)]
+    #[Groups(['write', 'read'])]
     #[Assert\NotBlank, Assert\NotNull]
     private ?string $username = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups('create_user')]
+    #[ORM\Column(length: 180)]
+    #[Groups(['write', 'read'])]
     #[Assert\NotBlank, Assert\NotNull]
     private ?string $firstname = null;
 
